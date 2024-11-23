@@ -1,8 +1,8 @@
 {
-  "realm": "demo",
+  "realm": "freelancer",
   "auth-server-url": "http://localhost:8080/",
   "ssl-required": "external",
-  "resource": "bookBox",
+  "resource": "react-client",
   "public-client": true,
   "confidential-port": 0
 }

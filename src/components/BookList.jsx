@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { createSelector } from "reselect";
 import { allBooks, deleteBook } from "../modules/books";
+import UserService from "../services/UserService";
 
 const BookList = () => {
 
@@ -11,6 +12,7 @@ const BookList = () => {
 
   useEffect(() => {
     dispatch(allBooks())
+    console.log(UserService.userRoles())
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
