@@ -7,20 +7,32 @@ import App from "./components/App";
 import rootReducer from "./modules";
 import UserService from "./services/UserService";
 
-
 // HTTP
 
-const _axios = axios.create({ baseURL: 'https://erah07zkak.execute-api.eu-central-1.amazonaws.com' });
-_axios.interceptors.request.use((config) => {
-  if (UserService.isLoggedIn()) {
-    const cb = () => {
-      config.headers.Authorization = `Bearer ${UserService.getToken()}`;
-      return Promise.resolve(config);
-    };
-    return UserService.updateToken(cb);
-  }
+export const _axios = axios.create({
+  baseURL: "http://localhost:8000",
 });
 
+_axios.interceptors.request.use(
+  async (config) => {
+    if (UserService.isLoggedIn()) {
+      if (UserService.isTokenExpired()) {
+        await UserService.doLogout();
+      }
+
+      // Attach the updated token to the headers
+      const token = UserService.getToken();
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    }
+
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 // REDUX STORE
 
@@ -29,6 +41,7 @@ const store = createStore(rootReducer, _middleware);
 
 // APP
 
-const renderApp = () => createRoot(document.getElementById("app")).render(<App store={store}/>);
+const renderApp = () =>
+  createRoot(document.getElementById("app")).render(<App store={store} />);
 
 UserService.initKeycloak(renderApp);

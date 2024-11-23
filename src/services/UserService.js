@@ -16,7 +16,7 @@ const initKeycloak = (onAuthenticatedCallback) => {
     .init({
       onLoad: "login-required",
       silentCheckSsoRedirectUri:
-        window.location.origin + "/silent-check-sso.html",
+        window.location.origin + "/silent-check-sso.htm",
       pkceMethod: "S256",
     })
     .then((authenticated) => {
@@ -47,6 +47,8 @@ const hasRole = (roles) => roles.some((role) => _kc.hasRealmRole(role));
 
 const userRoles = () => _kc.resourceAccess;
 
+const isTokenExpired = () => _kc.isTokenExpired(30);
+
 const UserService = {
   initKeycloak,
   doLogin,
@@ -58,6 +60,7 @@ const UserService = {
   getUsername,
   hasRole,
   userRoles,
+  isTokenExpired,
 };
 
 export default UserService;

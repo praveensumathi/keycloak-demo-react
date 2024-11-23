@@ -1,53 +1,29 @@
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import { createSelector } from "reselect";
-import { allBooks, deleteBook } from "../modules/books";
-import UserService from "../services/UserService";
+import { useEffect, useState } from "react";
+import { _axios } from "..";
 
 const BookList = () => {
+  const [email, setEmail] = useState("");
 
-  const dispatch = useDispatch();
-  const books = useSelector(createSelector((s) => s.books, (books) => books));
+  const getUserEmail = () => {
+    _axios.get("/profile").then((response) => {
+      if (response && response.data) {
+        setEmail(response.data);
+      }
+    });
+  };
 
   useEffect(() => {
-    dispatch(allBooks())
-    console.log(UserService.userRoles())
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    getUserEmail();
+  }, []);
 
   return (
     <div className="row">
       <div className="col-sm-12">
         <h1>Books to Read Before You Die</h1>
-        <table className="table table-striped align-middle">
-          <thead>
-          <tr>
-            <th>ID</th>
-            <th>Title</th>
-            <th>Author</th>
-            <th>Action</th>
-          </tr>
-          </thead>
-          <tbody>
-          {books.map((book) => (
-            <tr key={book.id}>
-              <td>{book.id}</td>
-              <td>
-                <Link to={`/books/${book.id}`}>{book.title}</Link>
-              </td>
-              <td>{book.author}</td>
-              <td>
-                <button className="btn btn-xs btn-danger" onClick={() => dispatch(deleteBook(book))}>
-                  Delete Book
-                </button>
-              </td>
-            </tr>
-          ))}
-          </tbody>
-        </table>
+        <h1>{email}</h1>
       </div>
     </div>
   );
-}
+};
 
-export default BookList
+export default BookList;
