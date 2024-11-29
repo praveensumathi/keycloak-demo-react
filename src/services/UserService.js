@@ -12,17 +12,36 @@ const _kc = new Keycloak({
  * @param onAuthenticatedCallback
  */
 const initKeycloak = (onAuthenticatedCallback) => {
+  // Check if token exists and is valid
+
+  _kc.updateToken(120).then((refreshed) => {
+    if (refreshed) {
+      console.info("Token refreshed" + refreshed);
+    } else {
+      console.warn(
+        "Token not refreshed, valid for " +
+          Math.round(
+            _kc.tokenParsed.exp + _kc.timeSkew - new Date().getTime() / 1000
+          ) +
+          " seconds"
+      );
+      onAuthenticatedCallback();
+    }
+  });
+
   _kc
     .init({
-      onLoad: "login-required",
+      onLoad: "check-sso",
       silentCheckSsoRedirectUri:
         window.location.origin + "/silent-check-sso.htm",
       pkceMethod: "S256",
     })
     .then((authenticated) => {
       if (!authenticated) {
+        //doLogin();
         console.log("user is not authenticated..!");
       }
+
       onAuthenticatedCallback();
     })
     .catch(console.error);

@@ -9,11 +9,11 @@ const App = ({ store }) => (
   <Provider store={store}>
     <BrowserRouter>
       <div className="container">
-        <RenderOnAnonymous>
+        {/* <RenderOnAnonymous>
           <Welcome/>
-        </RenderOnAnonymous>
+        </RenderOnAnonymous> */}
         <RenderOnAuthenticated>
-          <BookBox/>
+          <BookBox />
         </RenderOnAuthenticated>
       </div>
     </BrowserRouter>
